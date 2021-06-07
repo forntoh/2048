@@ -1,13 +1,14 @@
 package com.forntoh.twofoureight.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.consumeAllChanges
@@ -36,29 +37,38 @@ fun GameBoard(boardSize: Int = 4) {
             .padding(Padding.medium)
             .pointerInput(Unit) {
                 var direction = Board.Swipe.LEFT
-                detectDragGestures(
+                detectHorizontalDragGestures(
                     onDragEnd = { board.swipe(direction) },
-                ) { change, dragAmount ->
+                ) { change, x ->
                     change.consumeAllChanges()
-                    val (x, y) = dragAmount
-                    val (pX, pY) = change.previousPosition
-
                     when {
                         x > 0 -> direction = Board.Swipe.RIGHT
                         x < 0 -> direction = Board.Swipe.LEFT
                     }
+                }
+            }
+            .pointerInput(Unit) {
+                var direction = Board.Swipe.LEFT
+                detectVerticalDragGestures(
+                    onDragEnd = { board.swipe(direction) },
+                ) { change, y ->
+                    change.consumeAllChanges()
                     when {
                         y > 0 -> direction = Board.Swipe.DOWN
                         y < 0 -> direction = Board.Swipe.UP
                     }
-//                    Log.d("TAGERs", "GameBoard: $direction $dragAmount")
                 }
+
             }
     ) {
         val tileSize = maxWidth / boardSize
 
-        tiles?.forEach {
-            GameTile(number = it.value, size = tileSize, it.xPos, it.yPos)
+        tiles?.let {
+            for (i in 0 until board.size) {
+                for (j in 0 until board.size) {
+                    GameTile(number = it[i][j], size = tileSize, i, j)
+                }
+            }
         }
     }
 }
