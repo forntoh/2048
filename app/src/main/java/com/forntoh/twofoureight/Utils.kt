@@ -1,10 +1,5 @@
 package com.forntoh.twofoureight
 
-fun Int.random(size: Int, unique: Boolean = true): MutableList<Int> {
-    return if (unique) (0 until size).shuffled().take(this).toMutableList()
-    else IntArray(this) { (0 until size).random() }.toMutableList()
-}
-
 fun <T> Array<Array<T>>.isEqualTo(second: Array<Array<T>>): Boolean {
     if (this.contentEquals(second)) return true
     if (this.size != second.size) return false
