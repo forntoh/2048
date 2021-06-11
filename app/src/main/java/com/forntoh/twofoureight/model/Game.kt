@@ -7,8 +7,9 @@ import androidx.compose.runtime.setValue
 class Game(
     size: Int,
     val onScoreChange: (Int) -> Unit = {},
-    val onGameWon: () -> Unit = {},
-    val onGameOver: () -> Unit = {}
+    var onGameWon: () -> Unit = {},
+    var onGameOver: () -> Unit = {},
+    val onMove: () -> Unit = {}
 ) {
     private val grid = Grid(size)
 
@@ -17,9 +18,16 @@ class Game(
     private var score = 0
 
     init {
+        restart()
+    }
+
+    fun restart() {
+        score = 0
+        grid.reset()
         for (i in 0 until grid.size / 2) {
             grid.addTile()
         }
+        gridState = grid.copyOf()
     }
 
     private fun slide(row: List<Int>): Array<Int> {
@@ -108,7 +116,10 @@ class Game(
         if (flipped) grid.flip()
         if (transposed) grid.transpose()
 
-        if (changed) grid.addTile()
+        if (changed) {
+            grid.addTile()
+            onMove()
+        }
 
         gridState = grid.copyOf()
 

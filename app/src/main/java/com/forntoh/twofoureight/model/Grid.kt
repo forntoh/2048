@@ -7,6 +7,10 @@ class Grid(
 ) {
     var grid: Array<Array<Int>> = Array(size) { Array(size) { 0 } }
 
+    fun reset() {
+        grid = Array(size) { Array(size) { 0 } }
+    }
+
     fun addTile() {
         val options = mutableListOf<Pair<Int, Int>>()
         for (i in 0 until size) {

@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit
 
 @Composable
 fun Footer(
-    moves: Long,
+    moves: Int,
     millisecondsElapsed: Long,
     modifier: Modifier = Modifier
 ) {
