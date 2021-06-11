@@ -1,17 +1,17 @@
 package com.forntoh.twofoureight
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import com.forntoh.twofoureight.model.Game
+import com.forntoh.twofoureight.model.Grid
 import com.forntoh.twofoureight.ui.components.Footer
 import com.forntoh.twofoureight.ui.components.GameBoard
 import com.forntoh.twofoureight.ui.components.Header
@@ -27,21 +27,32 @@ fun GameApp() {
             Scaffold {
                 Column(
                     modifier = Modifier
-                        .padding(Padding.large)
-                        .statusBarsPadding(),
-                    verticalArrangement = Arrangement.spacedBy(Padding.large + 4.dp),
+                        .statusBarsPadding()
+                        .padding(Padding.large),
+                    verticalArrangement = Arrangement.spacedBy(Padding.large),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
 
-                    Header(score = 24, bestScore = 1068)
+                    Header(
+                        score = 24,
+                        bestScore = 1068
+                    )
 
-                    Text(text = "Join the tiles and get to the 2048 tile!")
+                    Text(text = stringResource(R.string.play_prompt))
 
-                    GameBoard()
+                    val game = Game(4)
+
+                    GameBoard(
+                        game = game,
+                        onSwipe = game::swipe
+                    )
 
                     Spacer(modifier = Modifier.weight(1f))
 
-                    Footer(moves = 10, millisecondsElapsed = 534687531)
+                    Footer(
+                        moves = 10,
+                        millisecondsElapsed = 34687531
+                    )
                 }
             }
         }

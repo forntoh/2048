@@ -1,5 +1,6 @@
 package com.forntoh.twofoureight.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.padding
@@ -51,10 +52,18 @@ fun GameTile(number: Int, size: Dp, dx: Int = 0, dy: Int = 0) {
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun TilePreview() {
-    GameTheme(darkTheme = true) {
-        GameTile(1024, 92.dp)
+    GameTheme {
+        GameTile(32, 92.dp)
+    }
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun TilePreviewDark() {
+    GameTheme {
+        GameTile(32, 92.dp)
     }
 }

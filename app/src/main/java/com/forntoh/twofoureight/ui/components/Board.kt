@@ -1,5 +1,6 @@
 package com.forntoh.twofoureight.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -8,24 +9,20 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.forntoh.twofoureight.model.Game
-import com.forntoh.twofoureight.model.Grid
-import com.forntoh.twofoureight.model.Tile
+import com.forntoh.twofoureight.ui.theme.GameTheme
 import com.forntoh.twofoureight.ui.theme.Padding
 
 @Composable
-fun GameBoard(boardSize: Int = 4) {
-
-    val grid = remember { Grid(boardSize) }
-    val game = Game(grid)
-
+fun GameBoard(
+    game: Game,
+    onSwipe: (Game.Swipe) -> Unit = {}
+) {
     BoxWithConstraints(
         modifier = Modifier
             .aspectRatio(1f)
@@ -37,9 +34,8 @@ fun GameBoard(boardSize: Int = 4) {
             .padding(Padding.medium)
             .pointerInput(Unit) {
                 var direction: Game.Swipe? = null
-
                 detectHorizontalDragGestures(
-                    onDragEnd = { direction?.let { game.swipe(it) } },
+                    onDragEnd = { direction?.let { onSwipe(it) } },
                 ) { change, x ->
                     change.consumeAllChanges()
                     when {
@@ -51,7 +47,7 @@ fun GameBoard(boardSize: Int = 4) {
             .pointerInput(Unit) {
                 var direction: Game.Swipe? = null
                 detectVerticalDragGestures(
-                    onDragEnd = { direction?.let { game.swipe(it) } },
+                    onDragEnd = { direction?.let { onSwipe(it) } },
                 ) { change, y ->
                     change.consumeAllChanges()
                     when {
@@ -61,13 +57,31 @@ fun GameBoard(boardSize: Int = 4) {
                 }
             }
     ) {
-        val tileSize = maxWidth / boardSize
+
+        val tileSize = maxWidth / game.gridState.size
+
         val mGrid = game.gridState
 
-        for (i in 0 until boardSize) {
-            for (j in 0 until boardSize) {
+        for (i in game.gridState.indices) {
+            for (j in game.gridState.indices) {
                 GameTile(number = mGrid[i][j], size = tileSize, i, j)
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BoardPreview() {
+    GameTheme {
+        GameBoard(game = Game(4))
+    }
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun BoardPreviewDark() {
+    GameTheme {
+        GameBoard(game = Game(4))
     }
 }
