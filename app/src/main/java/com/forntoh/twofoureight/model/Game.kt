@@ -1,21 +1,26 @@
 package com.forntoh.twofoureight.model
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 
 class Game(
-    size: Int
+    size: Int,
+    val onScoreChange: (Int) -> Unit = {},
+    val onGameWon: () -> Unit = {},
+    val onGameOver: () -> Unit = {}
 ) {
     private val grid = Grid(size)
 
     var gridState by mutableStateOf(grid.grid)
+
+    private var score = 0
 
     init {
         for (i in 0 until grid.size / 2) {
             grid.addTile()
         }
     }
-
-    private var score = 0
 
     private fun slide(row: List<Int>): Array<Int> {
         val arr = row.filter { it > 0 }.toMutableList()
@@ -33,9 +38,34 @@ class Game(
                 arr[i] = a + b
                 arr[i - 1] = 0
                 score += arr[i]
+                onScoreChange(score)
             }
         }
         return arr.toTypedArray()
+    }
+
+    private fun isGameWon() {
+        for (i in grid.grid.indices)
+            for (j in grid.grid.indices) {
+                if (grid[i][j] == 2048) {
+                    onGameWon()
+                }
+            }
+    }
+
+    private fun isGameOver() {
+        for (i in grid.grid.indices)
+            for (j in grid.grid.indices) {
+                if (grid[i][j] == 2048) {
+                    if (grid[i][j] == 0)
+                        return
+                    if (i != grid.size - 1 && grid[i][j] == grid[i + 1][j])
+                        return
+                    if (j != grid.size - 1 && grid[i][j] == grid[i][j + 1])
+                        return
+                }
+            }
+        onGameOver()
     }
 
     private fun operate(row: List<Int>): Array<Int> {
@@ -81,6 +111,9 @@ class Game(
         if (changed) grid.addTile()
 
         gridState = grid.copyOf()
+
+        isGameWon()
+        isGameOver()
     }
 
     enum class Swipe {

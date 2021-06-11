@@ -32,15 +32,14 @@ fun GameApp() {
                     verticalArrangement = Arrangement.spacedBy(Padding.large),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
+                    val game = Game(4)
 
                     Header(
-                        score = 24,
+                        score = 0,
                         bestScore = 1068
                     )
 
                     Text(text = stringResource(R.string.play_prompt))
-
-                    val game = Game(4)
 
                     GameBoard(
                         game = game,
