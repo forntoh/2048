@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">2048</string>
+    <string name="action_undo">UNDO</string>
+    <string name="action_new">NEW</string>
+    <string name="score">SCORE</string>
+    <string name="best">BEST</string>
+    <string name="moves">%d moves</string>
 </resources>

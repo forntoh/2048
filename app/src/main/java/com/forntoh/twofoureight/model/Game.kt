@@ -3,7 +3,7 @@ package com.forntoh.twofoureight.model
 import androidx.compose.runtime.*
 
 class Game(
-    val grid: Grid
+    private val grid: Grid
 ) {
 
     var gridState by mutableStateOf(grid.grid)

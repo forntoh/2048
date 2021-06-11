@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
@@ -27,7 +28,6 @@ fun GameBoard(boardSize: Int = 4) {
 
     BoxWithConstraints(
         modifier = Modifier
-            .padding(Padding.large, 64.dp)
             .aspectRatio(1f)
             .border(
                 width = Dp.Hairline,
@@ -62,9 +62,11 @@ fun GameBoard(boardSize: Int = 4) {
             }
     ) {
         val tileSize = maxWidth / boardSize
+        val mGrid = game.gridState
+
         for (i in 0 until boardSize) {
             for (j in 0 until boardSize) {
-                GameTile(number = game.gridState[i][j], size = tileSize, i, j)
+                GameTile(number = mGrid[i][j], size = tileSize, i, j)
             }
         }
     }
