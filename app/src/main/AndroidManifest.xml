@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.2048">
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.MainActivity"
             android:exported="true"
             android:theme="@style/Theme.2048.NoActionBar">
             <intent-filter>

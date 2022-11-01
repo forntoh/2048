@@ -1,32 +1,30 @@
 package com.forntoh.twofoureight.ui.components
 
-import android.util.Log
+import android.content.res.Configuration
 import androidx.compose.foundation.border
-import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
-import androidx.compose.runtime.*
-import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import com.forntoh.twofoureight.model.Board
+import com.forntoh.twofoureight.model.Game
+import com.forntoh.twofoureight.ui.theme.GameTheme
 import com.forntoh.twofoureight.ui.theme.Padding
 
 @Composable
-fun GameBoard(boardSize: Int = 4) {
-
-    val board = Board(4)
-
-    val tiles by board.tilesO.observeAsState()
-
+fun GameBoard(
+    game: Game,
+    onSwipe: (Game.Swipe) -> Unit = {}
+) {
     BoxWithConstraints(
         modifier = Modifier
-            .padding(Padding.large, 64.dp)
             .aspectRatio(1f)
             .border(
                 width = Dp.Hairline,
@@ -35,30 +33,55 @@ fun GameBoard(boardSize: Int = 4) {
             )
             .padding(Padding.medium)
             .pointerInput(Unit) {
-                var direction = Board.Swipe.LEFT
-                detectDragGestures(
-                    onDragEnd = { board.swipe(direction) },
-                ) { change, dragAmount ->
+                var direction: Game.Swipe? = null
+                detectHorizontalDragGestures(
+                    onDragEnd = { direction?.let { onSwipe(it) } },
+                ) { change, x ->
                     change.consumeAllChanges()
-                    val (x, y) = dragAmount
-                    val (pX, pY) = change.previousPosition
-
                     when {
-                        x > 0 -> direction = Board.Swipe.RIGHT
-                        x < 0 -> direction = Board.Swipe.LEFT
+                        x > 50 -> direction = Game.Swipe.RIGHT
+                        x < -50 -> direction = Game.Swipe.LEFT
                     }
+                }
+            }
+            .pointerInput(Unit) {
+                var direction: Game.Swipe? = null
+                detectVerticalDragGestures(
+                    onDragEnd = { direction?.let { onSwipe(it) } },
+                ) { change, y ->
+                    change.consumeAllChanges()
                     when {
-                        y > 0 -> direction = Board.Swipe.DOWN
-                        y < 0 -> direction = Board.Swipe.UP
+                        y > 50 -> direction = Game.Swipe.DOWN
+                        y < -50 -> direction = Game.Swipe.UP
                     }
-//                    Log.d("TAGERs", "GameBoard: $direction $dragAmount")
                 }
             }
     ) {
-        val tileSize = maxWidth / boardSize
 
-        tiles?.forEach {
-            GameTile(number = it.value, size = tileSize, it.xPos, it.yPos)
+        val tileSize = maxWidth / game.gridState.size
+
+        val mGrid = game.gridState
+
+        for (i in game.gridState.indices) {
+            for (j in game.gridState.indices) {
+                GameTile(number = mGrid[i][j], size = tileSize, i, j)
+            }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun BoardPreview() {
+    GameTheme {
+        GameBoard(game = Game(4))
+    }
+}
+
+@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Composable
+fun BoardPreviewDark() {
+    GameTheme {
+        GameBoard(game = Game(4))
     }
 }
