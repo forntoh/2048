@@ -26,11 +26,12 @@ fun PlayScreen(
     moves: Int,
     game: Game,
     timeElapsed: Long,
+    modifier: Modifier = Modifier,
     onNewRequest: () -> Unit = {},
     onUndoRequest: () -> Unit = {},
 ) {
     Column(
-        modifier = Modifier
+        modifier = modifier
             .statusBarsPadding()
             .padding(Padding.large),
         verticalArrangement = Arrangement.spacedBy(Padding.large),
