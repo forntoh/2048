@@ -125,6 +125,19 @@ class PreferenceRepository constructor(context: Context) {
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
+    var timeElapsed: Long = 0L
+        get() = sharedPreferences.getLong(PREFERENCE_TIME_ELAPSED, 0L)
+        set(value) {
+            sharedPreferences.edit().putLong(PREFERENCE_TIME_ELAPSED, value).apply()
+            field = value
+        }
+
+    private val _timeElapsedLive = MutableLiveData<Long>()
+    val timeElapsedLive: LiveData<Long>
+        get() = _timeElapsedLive
+
+//----------------------------------------------------------------------------------------------------------------------------------
+
     private val preferenceChangedListener =
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             when (key) {
@@ -141,6 +154,9 @@ class PreferenceRepository constructor(context: Context) {
                 PREFERENCE_MOVES -> {
                     _movesLive.value = moves
                 }
+                PREFERENCE_TIME_ELAPSED -> {
+                    _timeElapsedLive.value = timeElapsed
+                }
             }
         }
 
@@ -150,10 +166,12 @@ class PreferenceRepository constructor(context: Context) {
         _highScoreLive.value = highScore
         _movesLive.value = moves
         _scoreLive.value = score
+        _timeElapsedLive.value = timeElapsed
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangedListener)
     }
 
     companion object {
+        private const val PREFERENCE_TIME_ELAPSED = "timeElapsed"
         private const val PREFERENCE_SCORE = "score"
         private const val PREFERENCE_HIGH_SCORE = "highScore"
         private const val PREFERENCE_MOVES = "moves"
