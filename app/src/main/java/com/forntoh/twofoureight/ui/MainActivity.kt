@@ -4,13 +4,15 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
+import androidx.lifecycle.lifecycleScope
 import com.forntoh.twofoureight.model.Game
 import com.forntoh.twofoureight.store.PreferenceRepository
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
-import java.util.*
-import kotlin.time.Duration
+import com.forntoh.twofoureight.tickerFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
+import kotlin.time.Duration.Companion.seconds
 import kotlin.time.ExperimentalTime
 
 class MainActivity : ComponentActivity() {
@@ -26,7 +28,10 @@ class MainActivity : ComponentActivity() {
         val game = Game(
             size = 4,
             onScoreChange = { preferenceRepository.score = it },
-            onMove = { preferenceRepository.moves++ }
+            onMove = {
+                preferenceRepository.moves++
+                preferenceRepository.paused = false
+            },
         )
 
         preferenceRepository.useSystemUiMode = true
@@ -38,27 +43,16 @@ class MainActivity : ComponentActivity() {
             )
         }
 
-        tickerFlow(Duration.seconds(1))
-            .map { Calendar.getInstance() }
-            .distinctUntilChanged { old, new ->
-                old.get(Calendar.SECOND) == new.get(Calendar.SECOND)
-            }
-            .onEach {
-                setDateTime(it)
-            }
-            .launchIn(GlobalScope)
+        tickerFlow(1.seconds)
+            .map { preferenceRepository.paused }
+            .distinctUntilChanged { _, new -> new }
+            .onEach { preferenceRepository.timeElapsed++ }
+            .launchIn(lifecycleScope)
     }
 
-}
-
-@ExperimentalTime
-fun tickerFlow(
-    period: Duration,
-    initialDelay: Duration = Duration.ZERO
-) = flow {
-    delay(initialDelay)
-    while (true) {
-        emit(Unit)
-        delay(period)
+    override fun onResume() {
+        super.onResume()
+        preferenceRepository.paused = true
     }
+
 }
