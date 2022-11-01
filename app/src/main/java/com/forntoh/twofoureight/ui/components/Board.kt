@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.consumeAllChanges
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
@@ -37,7 +36,7 @@ fun GameBoard(
                 detectHorizontalDragGestures(
                     onDragEnd = { direction?.let { onSwipe(it) } },
                 ) { change, x ->
-                    change.consumeAllChanges()
+                    change.consume()
                     when {
                         x > 50 -> direction = Game.Swipe.RIGHT
                         x < -50 -> direction = Game.Swipe.LEFT
@@ -49,7 +48,7 @@ fun GameBoard(
                 detectVerticalDragGestures(
                     onDragEnd = { direction?.let { onSwipe(it) } },
                 ) { change, y ->
-                    change.consumeAllChanges()
+                    change.consume()
                     when {
                         y > 50 -> direction = Game.Swipe.DOWN
                         y < -50 -> direction = Game.Swipe.UP
