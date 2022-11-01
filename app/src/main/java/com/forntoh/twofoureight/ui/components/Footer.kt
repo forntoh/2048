@@ -23,18 +23,18 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun Footer(
     moves: Int,
-    millisecondsElapsed: Long,
+    secondsElapsed: Long,
     modifier: Modifier = Modifier
 ) {
     val hours =
-        TimeUnit.MILLISECONDS.toHours(millisecondsElapsed)
+        TimeUnit.SECONDS.toHours(secondsElapsed)
     val minutes =
-        TimeUnit.MILLISECONDS.toMinutes(millisecondsElapsed) - TimeUnit.HOURS.toMinutes(hours)
+        TimeUnit.SECONDS.toMinutes(secondsElapsed) - TimeUnit.HOURS.toMinutes(hours)
     val seconds =
-        TimeUnit.MILLISECONDS.toSeconds(millisecondsElapsed) - TimeUnit.MINUTES.toSeconds(minutes) - TimeUnit.HOURS.toSeconds(hours)
+        secondsElapsed - TimeUnit.MINUTES.toSeconds(minutes) - TimeUnit.HOURS.toSeconds(hours)
 
     val timeText = String.format(
-        if (hours > 0) "%d:%02d:%02d" else "%d:%02d",
+        "%d:%02d:%02d",
         hours, minutes, seconds
     )
 
@@ -70,7 +70,7 @@ fun FooterPreview() {
         Surface {
             Footer(
                 moves = 15,
-                millisecondsElapsed = 5_600_000,
+                secondsElapsed = 5_600_000,
                 modifier = Modifier.padding(16.dp)
             )
         }
@@ -84,7 +84,7 @@ fun FooterPreviewNight() {
         Surface {
             Footer(
                 moves = 163,
-                millisecondsElapsed = 5_600_000,
+                secondsElapsed = 5_600_000,
                 modifier = Modifier.padding(16.dp)
             )
         }
