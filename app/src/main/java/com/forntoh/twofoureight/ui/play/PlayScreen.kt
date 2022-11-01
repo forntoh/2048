@@ -25,6 +25,7 @@ fun PlayScreen(
     bestScore: Int,
     moves: Int,
     game: Game,
+    timeElapsed: Long,
     onNewRequest: () -> Unit = {},
     onUndoRequest: () -> Unit = {},
 ) {
@@ -54,7 +55,7 @@ fun PlayScreen(
 
         Footer(
             moves = moves,
-            millisecondsElapsed = 34687531
+            secondsElapsed = timeElapsed
         )
     }
 }
@@ -67,7 +68,8 @@ fun PlayScreenPreview() {
             score = 24,
             bestScore = 1024,
             moves = 10,
-            Game(4)
+            timeElapsed = 36000L,
+            game = Game(4)
         )
     }
 }
