@@ -20,6 +20,12 @@ class GameViewModel(
     private val _moves = MutableStateFlow(preferenceRepository.moves)
     val moves: StateFlow<Int> = _moves.asStateFlow()
 
+    private val _score = MutableStateFlow(preferenceRepository.score)
+    val score: StateFlow<Int> = _score.asStateFlow()
+
+    private val _highScore = MutableStateFlow(preferenceRepository.highScore)
+    val highScore: StateFlow<Int> = _highScore.asStateFlow()
+
     init {
         viewModelScope.launch {
             flow {
@@ -37,6 +43,16 @@ class GameViewModel(
 
     fun setMoves(moves: Int) {
         preferenceRepository.moves = _moves.updateAndGet { moves }
+    }
+
+    fun setScore(score: Int) {
+        preferenceRepository.score = _score.updateAndGet { score }
+    }
+
+    fun newGame() {
+        setMoves(0)
+        setScore(0)
+        preferenceRepository.timeElapsed = _playTimeInSecs.updateAndGet { 0 }
     }
 
 }

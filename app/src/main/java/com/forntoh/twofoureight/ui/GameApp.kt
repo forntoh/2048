@@ -5,7 +5,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -25,9 +24,9 @@ fun GameApp(
         GameTheme(darkTheme = preferenceRepository.isDarkTheme) {
             Scaffold { padding ->
 
-                val score by preferenceRepository.scoreLive.observeAsState(0)
-                val highScore by preferenceRepository.highScoreLive.observeAsState(0)
-                val moves by gameViewModel.moves.collectAsState(0)
+                val score by gameViewModel.score.collectAsState()
+                val highScore by gameViewModel.highScore.collectAsState()
+                val moves by gameViewModel.moves.collectAsState()
                 val timeElapsed by gameViewModel.playTimeInSecs.collectAsState()
 
                 PlayScreen(
@@ -38,9 +37,7 @@ fun GameApp(
                     game = game,
                     modifier = Modifier.padding(padding),
                     onNewRequest = {
-                        preferenceRepository.score = 0
-                        gameViewModel.setMoves(0)
-                        preferenceRepository.timeElapsed = 0
+                        gameViewModel.newGame()
                         game.restart()
                     },
                     onUndoRequest = {
