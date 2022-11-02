@@ -4,15 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.lifecycleScope
 import com.forntoh.twofoureight.model.Game
 import com.forntoh.twofoureight.store.PreferenceRepository
-import com.forntoh.twofoureight.tickerFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.launchIn
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
-import kotlin.time.Duration.Companion.seconds
 
 class MainActivity : ComponentActivity() {
 
@@ -37,15 +30,9 @@ class MainActivity : ComponentActivity() {
         setContent {
             GameApp(
                 preferenceRepository = preferenceRepository,
-                game = game
+                game = game,
             )
         }
-
-        tickerFlow(1.seconds)
-            .map { preferenceRepository.paused }
-            .distinctUntilChanged { _, new -> new }
-            .onEach { preferenceRepository.timeElapsed++ }
-            .launchIn(lifecycleScope)
     }
 
     override fun onResume() {

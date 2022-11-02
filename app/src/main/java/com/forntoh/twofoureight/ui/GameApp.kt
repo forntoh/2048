@@ -3,9 +3,12 @@ package com.forntoh.twofoureight.ui
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.forntoh.twofoureight.model.Game
 import com.forntoh.twofoureight.store.PreferenceRepository
 import com.forntoh.twofoureight.ui.play.PlayScreen
@@ -16,6 +19,7 @@ import com.google.accompanist.insets.ProvideWindowInsets
 fun GameApp(
     preferenceRepository: PreferenceRepository,
     game: Game,
+    gameViewModel: GameViewModel = viewModel(factory = GameVieModelFactory(LocalContext.current))
 ) {
     ProvideWindowInsets {
         GameTheme(darkTheme = preferenceRepository.isDarkTheme) {
@@ -23,8 +27,8 @@ fun GameApp(
 
                 val score by preferenceRepository.scoreLive.observeAsState(0)
                 val highScore by preferenceRepository.highScoreLive.observeAsState(0)
-                val moves by preferenceRepository.movesLive.observeAsState(0)
-                val timeElapsed by preferenceRepository.timeElapsedLive.observeAsState(0)
+                val moves by gameViewModel.moves.collectAsState(0)
+                val timeElapsed by gameViewModel.playTimeInSecs.collectAsState()
 
                 PlayScreen(
                     score = score,
@@ -35,7 +39,7 @@ fun GameApp(
                     modifier = Modifier.padding(padding),
                     onNewRequest = {
                         preferenceRepository.score = 0
-                        preferenceRepository.moves = 0
+                        gameViewModel.setMoves(0)
                         preferenceRepository.timeElapsed = 0
                         game.restart()
                     },
