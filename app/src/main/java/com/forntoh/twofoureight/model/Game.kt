@@ -45,8 +45,10 @@ class Game(
             if (a == b) {
                 arr[i] = a + b
                 arr[i - 1] = 0
-                score += arr[i]
-                onScoreChange(score)
+                if (score + arr[i] != score) {
+                    score += arr[i]
+                    onScoreChange(score)
+                }
             }
         }
         return arr.toTypedArray()
