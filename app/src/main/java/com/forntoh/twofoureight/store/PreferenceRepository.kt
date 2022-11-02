@@ -79,10 +79,6 @@ class PreferenceRepository constructor(context: Context) {
             field = value
         }
 
-    private val _isDarkThemeLive: MutableLiveData<Boolean> = MutableLiveData()
-    val isDarkThemeLive: LiveData<Boolean>
-        get() = _isDarkThemeLive
-
 //----------------------------------------------------------------------------------------------------------------------------------
 
     var score: Int = 0
@@ -93,10 +89,6 @@ class PreferenceRepository constructor(context: Context) {
             field = value
         }
 
-    private val _scoreLive = MutableLiveData<Int>()
-    val scoreLive: LiveData<Int>
-        get() = _scoreLive
-
 //----------------------------------------------------------------------------------------------------------------------------------
 
     var highScore: Int = 0
@@ -105,10 +97,6 @@ class PreferenceRepository constructor(context: Context) {
             sharedPreferences.edit().putInt(PREFERENCE_HIGH_SCORE, value).apply()
             field = value
         }
-
-    private val _highScoreLive = MutableLiveData<Int>()
-    val highScoreLive: LiveData<Int>
-        get() = _highScoreLive
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
@@ -119,10 +107,6 @@ class PreferenceRepository constructor(context: Context) {
             field = value
         }
 
-    private val _movesLive = MutableLiveData<Int>()
-    val movesLive: LiveData<Int>
-        get() = _movesLive
-
 //----------------------------------------------------------------------------------------------------------------------------------
 
     var timeElapsed: Long = 0L
@@ -132,9 +116,6 @@ class PreferenceRepository constructor(context: Context) {
             field = value
         }
 
-    private val _timeElapsedLive = MutableLiveData<Long>()
-    val timeElapsedLive: LiveData<Long>
-        get() = _timeElapsedLive
 //----------------------------------------------------------------------------------------------------------------------------------
 
     var paused: Boolean = true
@@ -155,19 +136,6 @@ class PreferenceRepository constructor(context: Context) {
             when (key) {
                 PREFERENCE_NIGHT_MODE -> {
                     _nightModeLive.value = nightMode
-                    _isDarkThemeLive.value = isDarkTheme
-                }
-                PREFERENCE_SCORE -> {
-                    _scoreLive.value = score
-                }
-                PREFERENCE_HIGH_SCORE -> {
-                    _highScoreLive.value = highScore
-                }
-                PREFERENCE_MOVES -> {
-                    _movesLive.value = moves
-                }
-                PREFERENCE_TIME_ELAPSED -> {
-                    _timeElapsedLive.value = timeElapsed
                 }
                 PREFERENCE_PAUSED -> {
                     _pausedLive.value = paused
@@ -177,11 +145,6 @@ class PreferenceRepository constructor(context: Context) {
 
     init {
         _nightModeLive.value = nightMode
-        _isDarkThemeLive.value = isDarkTheme
-        _highScoreLive.value = highScore
-        _movesLive.value = moves
-        _scoreLive.value = score
-        _timeElapsedLive.value = timeElapsed
         _pausedLive.value = paused
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangedListener)
     }

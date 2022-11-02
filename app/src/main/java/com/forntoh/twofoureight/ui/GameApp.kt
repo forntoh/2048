@@ -8,20 +8,19 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.forntoh.twofoureight.model.Game
-import com.forntoh.twofoureight.store.PreferenceRepository
 import com.forntoh.twofoureight.ui.play.PlayScreen
 import com.forntoh.twofoureight.ui.theme.GameTheme
 import com.google.accompanist.insets.ProvideWindowInsets
 
 @Composable
 fun GameApp(
-    preferenceRepository: PreferenceRepository,
-    game: Game,
     gameViewModel: GameViewModel = viewModel(factory = GameVieModelFactory(LocalContext.current))
 ) {
+    val isDarkTheme by gameViewModel.isDarkTheme.collectAsState()
+    val game by gameViewModel.game.collectAsState()
+
     ProvideWindowInsets {
-        GameTheme(darkTheme = preferenceRepository.isDarkTheme) {
+        GameTheme(darkTheme = isDarkTheme) {
             Scaffold { padding ->
 
                 val score by gameViewModel.score.collectAsState()
@@ -36,10 +35,7 @@ fun GameApp(
                     timeElapsed = timeElapsed,
                     game = game,
                     modifier = Modifier.padding(padding),
-                    onNewRequest = {
-                        gameViewModel.newGame()
-                        game.restart()
-                    },
+                    onNewRequest = { gameViewModel.newGame() },
                     onUndoRequest = {
 
                     }

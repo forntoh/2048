@@ -4,7 +4,6 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.core.view.WindowCompat
-import com.forntoh.twofoureight.model.Game
 import com.forntoh.twofoureight.store.PreferenceRepository
 
 class MainActivity : ComponentActivity() {
@@ -16,22 +15,10 @@ class MainActivity : ComponentActivity() {
 
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
-        val game = Game(
-            size = 4,
-            onScoreChange = { preferenceRepository.score = it },
-            onMove = {
-                preferenceRepository.moves++
-                preferenceRepository.paused = false
-            },
-        )
-
         preferenceRepository.useSystemUiMode = true
 
         setContent {
-            GameApp(
-                preferenceRepository = preferenceRepository,
-                game = game,
-            )
+            GameApp()
         }
     }
 

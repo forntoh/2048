@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.forntoh.twofoureight.model.Game
 import com.forntoh.twofoureight.store.PreferenceRepository
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
@@ -26,6 +27,12 @@ class GameViewModel(
     private val _highScore = MutableStateFlow(preferenceRepository.highScore)
     val highScore: StateFlow<Int> = _highScore.asStateFlow()
 
+    private val _isDarkTheme = MutableStateFlow(preferenceRepository.isDarkTheme)
+    val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
+
+    private val _game = MutableStateFlow(Game(4))
+    val game: StateFlow<Game> = _game.asStateFlow()
+
     init {
         viewModelScope.launch {
             flow {
@@ -39,20 +46,23 @@ class GameViewModel(
                 .onEach { preferenceRepository.timeElapsed = _playTimeInSecs.updateAndGet { prev -> prev + 1 } }
                 .collect()
         }
-    }
-
-    fun setMoves(moves: Int) {
-        preferenceRepository.moves = _moves.updateAndGet { moves }
-    }
-
-    fun setScore(score: Int) {
-        preferenceRepository.score = _score.updateAndGet { score }
+        _game.update {
+            Game(
+                size = 4,
+                onScoreChange = { score -> preferenceRepository.score = _score.updateAndGet { score } },
+                onMove = {
+                    preferenceRepository.moves = _moves.updateAndGet { it + 1 }
+                    preferenceRepository.paused = false
+                },
+            )
+        }
     }
 
     fun newGame() {
-        setMoves(0)
-        setScore(0)
+        preferenceRepository.moves = _moves.updateAndGet { 0 }
+        preferenceRepository.score = _score.updateAndGet { 0 }
         preferenceRepository.timeElapsed = _playTimeInSecs.updateAndGet { 0 }
+        _game.value.restart()
     }
 
 }
