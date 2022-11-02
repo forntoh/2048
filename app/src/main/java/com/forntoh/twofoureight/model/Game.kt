@@ -6,19 +6,20 @@ import androidx.compose.runtime.setValue
 
 class Game(
     size: Int,
+    private var score: Int = 0,
+    val state: Array<IntArray> = arrayOf(),
     val onScoreChange: (Int) -> Unit = {},
     var onGameWon: () -> Unit = {},
     var onGameOver: () -> Unit = {},
     val onMove: () -> Unit = {}
 ) {
-    private val grid = Grid(size)
+    private val grid = Grid(if (state.isEmpty()) Array(size) { IntArray(size) { 0 } } else state)
 
     var gridState by mutableStateOf(grid.grid)
 
-    private var score = 0
-
     init {
-        restart()
+        if (state.isEmpty()) restart()
+        onScoreChange(score)
     }
 
     fun restart() {
@@ -110,7 +111,7 @@ class Game(
         val past = grid.copyOf()
 
         for (i in 0 until grid.size) {
-            grid[i] = operate(grid[i].asList())
+            grid[i] = operate(grid[i].asList()).toIntArray()
         }
 
         val changed = !grid.isEqualTo(past)
