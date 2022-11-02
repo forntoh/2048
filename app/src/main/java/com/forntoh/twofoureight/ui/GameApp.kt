@@ -35,10 +35,8 @@ fun GameApp(
                     timeElapsed = timeElapsed,
                     game = game,
                     modifier = Modifier.padding(padding),
-                    onNewRequest = { gameViewModel.newGame() },
-                    onUndoRequest = {
-
-                    }
+                    onNewRequest = gameViewModel::newGame,
+                    onUndoRequest = gameViewModel::undoMove
                 )
             }
         }

@@ -68,7 +68,15 @@ class GameViewModel(
         preferenceRepository.score = _score.updateAndGet { 0 }
         preferenceRepository.timeElapsed = _playTimeInSecs.updateAndGet { 0 }
         preferenceRepository.boardState = arrayOf()
+        preferenceRepository.previousBoardState = arrayOf()
         _game.value.restart()
+    }
+
+    fun undoMove() {
+        if (preferenceRepository.previousBoardState.isNotEmpty()) {
+            _game.value.gridState = preferenceRepository.previousBoardState
+            preferenceRepository.boardState = preferenceRepository.previousBoardState
+        }
     }
 }
 
