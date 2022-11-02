@@ -13,13 +13,11 @@ import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlin.time.Duration.Companion.seconds
-import kotlin.time.ExperimentalTime
 
 class MainActivity : ComponentActivity() {
 
     private val preferenceRepository: PreferenceRepository by lazy { PreferenceRepository(this) }
 
-    @ExperimentalTime
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
