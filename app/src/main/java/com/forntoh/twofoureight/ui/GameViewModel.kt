@@ -27,8 +27,7 @@ class GameViewModel(
     private val _highScore = MutableStateFlow(preferenceRepository.highScore)
     val highScore: StateFlow<Int> = _highScore.asStateFlow()
 
-    private val _isDarkTheme = MutableStateFlow(preferenceRepository.isDarkTheme)
-    val isDarkTheme: StateFlow<Boolean> = _isDarkTheme.asStateFlow()
+    val isDarkTheme = preferenceRepository.isNightMode
 
     private val _game = MutableStateFlow(Game(4))
     val game: StateFlow<Game> = _game.asStateFlow()

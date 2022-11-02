@@ -23,6 +23,9 @@ import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * A simple data repository for in-app settings.
@@ -58,10 +61,6 @@ class PreferenceRepository constructor(context: Context) {
             }
         }
 
-    private val _nightModeLive: MutableLiveData<Int> = MutableLiveData()
-    val nightModeLive: LiveData<Int>
-        get() = _nightModeLive
-
 //----------------------------------------------------------------------------------------------------------------------------------
 
     var isDarkTheme: Boolean = false
@@ -79,12 +78,14 @@ class PreferenceRepository constructor(context: Context) {
             field = value
         }
 
+    private val _isNightMode: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val isNightMode: StateFlow<Boolean> = _isNightMode.asStateFlow()
+
 //----------------------------------------------------------------------------------------------------------------------------------
 
     var score: Int = 0
         get() = sharedPreferences.getInt(PREFERENCE_SCORE, 0)
         set(value) {
-            if (highScore < value) highScore = value
             sharedPreferences.edit().putInt(PREFERENCE_SCORE, value).apply()
             field = value
         }
@@ -135,7 +136,7 @@ class PreferenceRepository constructor(context: Context) {
         SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
             when (key) {
                 PREFERENCE_NIGHT_MODE -> {
-                    _nightModeLive.value = nightMode
+                    _isNightMode.value = isDarkTheme
                 }
                 PREFERENCE_PAUSED -> {
                     _pausedLive.value = paused
@@ -144,7 +145,7 @@ class PreferenceRepository constructor(context: Context) {
         }
 
     init {
-        _nightModeLive.value = nightMode
+        _isNightMode.value = isDarkTheme
         _pausedLive.value = paused
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangedListener)
     }
