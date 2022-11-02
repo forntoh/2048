@@ -48,8 +48,11 @@ class GameViewModel(
         }
         _game.update {
             Game(
-                size = 4,
-                onScoreChange = { score -> preferenceRepository.score = _score.updateAndGet { score } },
+                size = 5,
+                onScoreChange = { score ->
+                    preferenceRepository.score = _score.updateAndGet { score }
+                    if (highScore.value < score) preferenceRepository.highScore = _highScore.updateAndGet { score }
+                },
                 onMove = {
                     preferenceRepository.moves = _moves.updateAndGet { it + 1 }
                     preferenceRepository.paused = false

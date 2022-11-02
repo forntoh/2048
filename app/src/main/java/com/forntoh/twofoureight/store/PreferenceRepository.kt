@@ -93,7 +93,7 @@ class PreferenceRepository constructor(context: Context) {
 
     var highScore: Int = 0
         get() = sharedPreferences.getInt(PREFERENCE_HIGH_SCORE, 0)
-        private set(value) {
+        set(value) {
             sharedPreferences.edit().putInt(PREFERENCE_HIGH_SCORE, value).apply()
             field = value
         }
