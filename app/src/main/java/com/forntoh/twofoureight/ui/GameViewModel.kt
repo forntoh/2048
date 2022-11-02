@@ -47,7 +47,9 @@ class GameViewModel(
         }
         _game.update {
             Game(
-                size = 5,
+                size = 4,
+                score = preferenceRepository.score,
+                state = preferenceRepository.boardState,
                 onScoreChange = { score ->
                     preferenceRepository.score = _score.updateAndGet { score }
                     if (highScore.value < score) preferenceRepository.highScore = _highScore.updateAndGet { score }
@@ -55,6 +57,7 @@ class GameViewModel(
                 onMove = {
                     preferenceRepository.moves = _moves.updateAndGet { it + 1 }
                     preferenceRepository.paused = false
+                    preferenceRepository.boardState = _game.value.gridState
                 },
             )
         }
@@ -64,9 +67,9 @@ class GameViewModel(
         preferenceRepository.moves = _moves.updateAndGet { 0 }
         preferenceRepository.score = _score.updateAndGet { 0 }
         preferenceRepository.timeElapsed = _playTimeInSecs.updateAndGet { 0 }
+        preferenceRepository.boardState = arrayOf()
         _game.value.restart()
     }
-
 }
 
 class GameVieModelFactory(private val context: Context) :

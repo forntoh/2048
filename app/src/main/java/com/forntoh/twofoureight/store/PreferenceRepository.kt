@@ -23,6 +23,8 @@ import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -31,6 +33,8 @@ import kotlinx.coroutines.flow.asStateFlow
  * A simple data repository for in-app settings.
  */
 class PreferenceRepository constructor(context: Context) {
+
+    val gson = Gson()
 
     private val sharedPreferences: SharedPreferences =
         context.getSharedPreferences(context.packageName + ".DB", Context.MODE_PRIVATE)
@@ -119,6 +123,29 @@ class PreferenceRepository constructor(context: Context) {
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
+    var boardState: Array<IntArray> = arrayOf()
+        get() = gson.fromJson(
+            sharedPreferences.getString(PREFERENCE_BOARD_STATE, "[]"),
+            object : TypeToken<Array<IntArray>>() {}.type
+        )
+        set(value) {
+            previousBoardState = boardState
+            sharedPreferences.edit().putString(PREFERENCE_BOARD_STATE, gson.toJson(value)).apply()
+            field = value
+        }
+
+    var previousBoardState: Array<IntArray> = arrayOf()
+        get() = gson.fromJson(
+            sharedPreferences.getString(PREFERENCE_BOARD_PREVIOUS_STATE, "[]"),
+            object : TypeToken<Array<IntArray>>() {}.type
+        )
+        set(value) {
+            sharedPreferences.edit().putString(PREFERENCE_BOARD_PREVIOUS_STATE, gson.toJson(value)).apply()
+            field = value
+        }
+
+//----------------------------------------------------------------------------------------------------------------------------------
+
     var paused: Boolean = true
         get() = sharedPreferences.getBoolean(PREFERENCE_PAUSED, true)
         set(value) {
@@ -151,6 +178,8 @@ class PreferenceRepository constructor(context: Context) {
     }
 
     companion object {
+        private const val PREFERENCE_BOARD_STATE = "boardState"
+        private const val PREFERENCE_BOARD_PREVIOUS_STATE = "boardPrevState"
         private const val PREFERENCE_TIME_ELAPSED = "timeElapsed"
         private const val PREFERENCE_PAUSED = "paused"
         private const val PREFERENCE_SCORE = "score"
