@@ -9,13 +9,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import com.forntoh.twofoureight.R
 import com.forntoh.twofoureight.model.Game
 import com.forntoh.twofoureight.ui.components.Footer
 import com.forntoh.twofoureight.ui.components.GameBoard
 import com.forntoh.twofoureight.ui.components.Header
-import com.forntoh.twofoureight.ui.theme.GameTheme
 import com.forntoh.twofoureight.ui.theme.Padding
 import com.google.accompanist.insets.statusBarsPadding
 
@@ -25,6 +23,7 @@ fun PlayScreen(
     bestScore: Int,
     moves: Int,
     game: Game,
+    grid: List<IntArray>,
     timeElapsed: Long,
     modifier: Modifier = Modifier,
     onNewRequest: () -> Unit = {},
@@ -48,7 +47,7 @@ fun PlayScreen(
         Text(text = stringResource(R.string.play_prompt))
 
         GameBoard(
-            game = game,
+            grid = grid,
             onSwipe = game::swipe
         )
 
@@ -61,16 +60,16 @@ fun PlayScreen(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PlayScreenPreview() {
-    GameTheme {
-        PlayScreen(
-            score = 24,
-            bestScore = 1024,
-            moves = 10,
-            timeElapsed = 36000L,
-            game = Game(4)
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun PlayScreenPreview() {
+//    GameTheme {
+//        PlayScreen(
+//            score = 24,
+//            bestScore = 1024,
+//            moves = 10,
+//            timeElapsed = 36000L,
+//            game = Game(4)
+//        )
+//    }
+//}

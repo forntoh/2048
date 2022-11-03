@@ -7,7 +7,7 @@ class Game(
     val onScoreChange: (Int) -> Unit = {},
     var onGameWon: () -> Unit = {},
     var onGameOver: () -> Unit = {},
-    val onMove: () -> Unit = {}
+    val onMove: (Grid) -> Unit = {}
 ) {
     private val _grid = Grid(size, state.ifEmpty { List(size) { IntArray(size) { 0 } } })
     val grid = _grid as List<IntArray>
@@ -117,7 +117,7 @@ class Game(
         if (transposed) _grid.transpose()
         if (changed) _grid.addTile()
 
-        onMove()
+        onMove(_grid)
 
         isGameWon()
         isGameOver()

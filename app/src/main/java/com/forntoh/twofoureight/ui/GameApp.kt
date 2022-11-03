@@ -17,7 +17,8 @@ fun GameApp(
     gameViewModel: GameViewModel = viewModel(factory = GameVieModelFactory(LocalContext.current))
 ) {
     val isDarkTheme by gameViewModel.isDarkTheme.collectAsState()
-    val game by gameViewModel.game.collectAsState()
+    val game = gameViewModel.game
+    val grid by gameViewModel.grid
 
     ProvideWindowInsets {
         GameTheme(darkTheme = isDarkTheme) {
@@ -34,6 +35,7 @@ fun GameApp(
                     moves = moves,
                     timeElapsed = timeElapsed,
                     game = game,
+                    grid = grid,
                     modifier = Modifier.padding(padding),
                     onNewRequest = gameViewModel::newGame,
                     onUndoRequest = gameViewModel::undoMove

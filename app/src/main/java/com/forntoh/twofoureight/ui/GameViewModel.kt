@@ -1,6 +1,7 @@
 package com.forntoh.twofoureight.ui
 
 import android.content.Context
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
@@ -29,8 +30,24 @@ class GameViewModel(
 
     val isDarkTheme = preferenceRepository.isNightMode
 
-    private val _game = MutableStateFlow(Game(4))
-    val game: StateFlow<Game> = _game.asStateFlow()
+    val game = Game(
+        size = 4,
+        score = preferenceRepository.score,
+        state = preferenceRepository.boardState,
+        onScoreChange = { score ->
+            preferenceRepository.score = _score.updateAndGet { score }
+            if (highScore.value < score) preferenceRepository.highScore = _highScore.updateAndGet { score }
+        },
+        onMove = {
+            with(preferenceRepository) {
+                moves = _moves.updateAndGet { it + 1 }
+                paused = false
+                boardState = it
+            }
+        },
+    )
+
+    val grid = mutableStateOf(game.grid)
 
     init {
         viewModelScope.launch {
@@ -45,24 +62,6 @@ class GameViewModel(
                 .onEach { preferenceRepository.timeElapsed = _playTimeInSecs.updateAndGet { prev -> prev + 1 } }
                 .collect()
         }
-        _game.update {
-            Game(
-                size = 4,
-                score = preferenceRepository.score,
-                state = preferenceRepository.boardState,
-                onScoreChange = { score ->
-                    preferenceRepository.score = _score.updateAndGet { score }
-                    if (highScore.value < score) preferenceRepository.highScore = _highScore.updateAndGet { score }
-                },
-                onMove = {
-                    with(preferenceRepository) {
-                        moves = _moves.updateAndGet { it + 1 }
-                        paused = false
-                        boardState = _game.value.grid
-                    }
-                },
-            )
-        }
     }
 
     fun newGame() {
@@ -73,13 +72,13 @@ class GameViewModel(
             boardState = emptyList()
             previousBoardState = emptyList()
         }
-        _game.value.restart()
+        game.restart()
     }
 
     fun undoMove() = with(preferenceRepository) {
         if (previousBoardState.isNotEmpty()) {
-            _game.value.setValues(previousBoardState)
-            _game.value.score = previousScore
+            game.setValues(previousBoardState)
+            game.score = previousScore
             boardState = previousBoardState
             score = _score.updateAndGet { previousScore }
         }
