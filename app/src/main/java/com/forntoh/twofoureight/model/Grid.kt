@@ -2,13 +2,7 @@ package com.forntoh.twofoureight.model
 
 import kotlin.random.Random
 
-class Grid(var grid: Array<IntArray>) {
-
-    val size = grid.size
-
-    fun reset() {
-        grid = Array(size) { IntArray(size) { 0 } }
-    }
+class Grid(size: Int) : MutableList<IntArray> by MutableList(size, { IntArray(size) { 0 } }) {
 
     fun addTile() {
         val options = mutableListOf<Pair<Int, Int>>()
@@ -25,7 +19,7 @@ class Grid(var grid: Array<IntArray>) {
         }
     }
 
-    fun isEqualTo(second: Array<IntArray>): Boolean {
+    fun isEqualTo(second: List<IntArray>): Boolean {
         if (this.contentEquals(second)) return true
         if (this.size != second.size) return false
         for (i in this.indices) {
@@ -59,20 +53,9 @@ class Grid(var grid: Array<IntArray>) {
         }
     }
 
-    private val indices: IntRange
-        get() = grid.indices
+    private fun contentEquals(second: List<IntArray>): Boolean =
+        this.toTypedArray().contentEquals(second.toTypedArray())
 
-    private fun contentEquals(second: Array<IntArray>): Boolean {
-        return grid.contentEquals(second)
-    }
+    fun copyOf() = this.toTypedArray().copyOf().toList()
 
-    operator fun get(i: Int): IntArray {
-        return grid[i]
-    }
-
-    operator fun set(i: Int, value: IntArray) {
-        grid[i] = value
-    }
-
-    fun copyOf() = grid.copyOf()
 }
