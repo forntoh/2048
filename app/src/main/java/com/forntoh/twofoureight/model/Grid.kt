@@ -19,22 +19,6 @@ class Grid(size: Int) : MutableList<IntArray> by MutableList(size, { IntArray(si
         }
     }
 
-    fun isEqualTo(second: List<IntArray>): Boolean {
-        if (this.contentEquals(second)) return true
-        if (this.size != second.size) return false
-        for (i in this.indices) {
-            if (this[i].size != second[i].size) {
-                return false
-            }
-            for (j in this[i].indices) {
-                if (this[i][j] != second[i][j]) {
-                    return false
-                }
-            }
-        }
-        return true
-    }
-
     fun transpose() {
         val transpose = Array(size) { IntArray(size) { 0 } }
         for (i in 0 until size) {
@@ -53,8 +37,18 @@ class Grid(size: Int) : MutableList<IntArray> by MutableList(size, { IntArray(si
         }
     }
 
-    private fun contentEquals(second: List<IntArray>): Boolean =
-        this.toTypedArray().contentEquals(second.toTypedArray())
+    fun isEqualTo(second: List<IntArray>): Boolean {
+        if (this.size != second.size) return false
+        if (this.contentEquals(second)) return true
+        return true
+    }
+
+    private fun contentEquals(second: List<IntArray>): Boolean {
+        for (i in this.indices) {
+            if (!this[i].contentEquals(second[i])) return false
+        }
+        return true
+    }
 
     fun copyOf() = this.toTypedArray().copyOf().toList()
 
