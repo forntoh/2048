@@ -57,12 +57,12 @@ fun GameBoard(
             }
     ) {
 
-        val tileSize = maxWidth / game.gridState.size
+        val tileSize = maxWidth / game.grid.size
 
-        val mGrid = game.gridState
+        val mGrid = game.grid
 
-        for (i in game.gridState.indices) {
-            for (j in game.gridState.indices) {
+        for (i in game.grid.indices) {
+            for (j in game.grid.indices) {
                 GameTile(number = mGrid[i][j], size = tileSize, i, j)
             }
         }
