@@ -88,7 +88,15 @@ class PreferenceRepository constructor(context: Context) {
     var score: Int = 0
         get() = sharedPreferences.getInt(PREFERENCE_SCORE, 0)
         set(value) {
+            previousScore = score
             sharedPreferences.edit().putInt(PREFERENCE_SCORE, value).apply()
+            field = value
+        }
+
+    var previousScore: Int = 0
+        get() = sharedPreferences.getInt(PREFERENCE_PREVIOUS_SCORE, 0)
+        set(value) {
+            sharedPreferences.edit().putInt(PREFERENCE_PREVIOUS_SCORE, value).apply()
             field = value
         }
 
@@ -173,6 +181,7 @@ class PreferenceRepository constructor(context: Context) {
         private const val PREFERENCE_TIME_ELAPSED = "timeElapsed"
         private const val PREFERENCE_PAUSED = "paused"
         private const val PREFERENCE_SCORE = "score"
+        private const val PREFERENCE_PREVIOUS_SCORE = "scorePrev"
         private const val PREFERENCE_HIGH_SCORE = "highScore"
         private const val PREFERENCE_MOVES = "moves"
         private const val PREFERENCE_NIGHT_MODE = "preference_night_mode"
