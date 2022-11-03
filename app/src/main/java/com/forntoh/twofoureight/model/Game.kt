@@ -20,6 +20,7 @@ class Game(
         score = 0
         _grid.clear()
         repeat(size) { _grid.add(IntArray(size) { 0 }) }
+        repeat(size / 2) { _grid.addTile() }
     }
 
     fun setValues(values: List<IntArray>) {
