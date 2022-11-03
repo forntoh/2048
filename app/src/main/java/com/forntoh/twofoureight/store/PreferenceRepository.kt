@@ -21,8 +21,6 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.content.res.Resources
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -123,10 +121,10 @@ class PreferenceRepository constructor(context: Context) {
 
 //----------------------------------------------------------------------------------------------------------------------------------
 
-    var boardState: Array<IntArray> = arrayOf()
+    var boardState: List<IntArray> = emptyList()
         get() = gson.fromJson(
             sharedPreferences.getString(PREFERENCE_BOARD_STATE, "[]"),
-            object : TypeToken<Array<IntArray>>() {}.type
+            object : TypeToken<MutableList<IntArray>>() {}.type
         )
         set(value) {
             previousBoardState = boardState
@@ -134,10 +132,10 @@ class PreferenceRepository constructor(context: Context) {
             field = value
         }
 
-    var previousBoardState: Array<IntArray> = arrayOf()
+    var previousBoardState: List<IntArray> = emptyList()
         get() = gson.fromJson(
             sharedPreferences.getString(PREFERENCE_BOARD_PREVIOUS_STATE, "[]"),
-            object : TypeToken<Array<IntArray>>() {}.type
+            object : TypeToken<MutableList<IntArray>>() {}.type
         )
         set(value) {
             sharedPreferences.edit().putString(PREFERENCE_BOARD_PREVIOUS_STATE, gson.toJson(value)).apply()
@@ -153,10 +151,6 @@ class PreferenceRepository constructor(context: Context) {
             field = value
         }
 
-    private val _pausedLive = MutableLiveData<Boolean>()
-    val pausedLive: LiveData<Boolean>
-        get() = _pausedLive
-
 //----------------------------------------------------------------------------------------------------------------------------------
 
     private val preferenceChangedListener =
@@ -165,15 +159,11 @@ class PreferenceRepository constructor(context: Context) {
                 PREFERENCE_NIGHT_MODE -> {
                     _isNightMode.value = isDarkTheme
                 }
-                PREFERENCE_PAUSED -> {
-                    _pausedLive.value = paused
-                }
             }
         }
 
     init {
         _isNightMode.value = isDarkTheme
-        _pausedLive.value = paused
         sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangedListener)
     }
 
