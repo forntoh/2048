@@ -57,7 +57,7 @@ class GameViewModel(
                 onMove = {
                     preferenceRepository.moves = _moves.updateAndGet { it + 1 }
                     preferenceRepository.paused = false
-                    preferenceRepository.boardState = _game.value.gridState
+                    preferenceRepository.boardState = _game.value.grid
                 },
             )
         }
@@ -67,14 +67,14 @@ class GameViewModel(
         preferenceRepository.moves = _moves.updateAndGet { 0 }
         preferenceRepository.score = _score.updateAndGet { 0 }
         preferenceRepository.timeElapsed = _playTimeInSecs.updateAndGet { 0 }
-        preferenceRepository.boardState = arrayOf()
-        preferenceRepository.previousBoardState = arrayOf()
+        preferenceRepository.boardState = emptyList()
+        preferenceRepository.previousBoardState = emptyList()
         _game.value.restart()
     }
 
     fun undoMove() {
         if (preferenceRepository.previousBoardState.isNotEmpty()) {
-            _game.value.gridState = preferenceRepository.previousBoardState
+            _game.value.setValues(preferenceRepository.previousBoardState)
             preferenceRepository.boardState = preferenceRepository.previousBoardState
         }
     }
