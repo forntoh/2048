@@ -1,34 +1,37 @@
 package com.forntoh.twofoureight.model
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
-
 class Game(
-    size: Int,
+    val size: Int,
     private var score: Int = 0,
-    val state: Array<IntArray> = arrayOf(),
+    val state: List<IntArray> = emptyList(),
     val onScoreChange: (Int) -> Unit = {},
     var onGameWon: () -> Unit = {},
     var onGameOver: () -> Unit = {},
     val onMove: () -> Unit = {}
 ) {
-    private val grid = Grid(if (state.isEmpty()) Array(size) { IntArray(size) { 0 } } else state)
-
-    var gridState by mutableStateOf(grid.grid)
+    private val _grid = Grid(size)
+    val grid = _grid as List<IntArray>
 
     init {
         if (state.isEmpty()) restart()
+        else {
+            _grid.clear()
+            _grid.addAll(state)
+        }
         onScoreChange(score)
     }
 
     fun restart() {
         score = 0
-        grid.reset()
-        for (i in 0 until grid.size / 2) {
-            grid.addTile()
+        _grid.clear()
+        for (i in 0 until size) {
+            _grid.add(IntArray(size) { 0 })
         }
-        gridState = grid.copyOf()
+    }
+
+    fun setValues(values: List<IntArray>) {
+        _grid.clear()
+        _grid.addAll(values)
     }
 
     private fun slide(row: List<Int>): Array<Int> {
@@ -56,8 +59,8 @@ class Game(
     }
 
     private fun isGameWon() {
-        for (i in grid.grid.indices)
-            for (j in grid.grid.indices) {
+        for (i in grid.indices)
+            for (j in grid.indices) {
                 if (grid[i][j] == 2048) {
                     onGameWon()
                 }
@@ -65,8 +68,8 @@ class Game(
     }
 
     private fun isGameOver() {
-        for (i in grid.grid.indices)
-            for (j in grid.grid.indices) {
+        for (i in grid.indices)
+            for (j in grid.indices) {
                 if (grid[i][j] == 2048) {
                     if (grid[i][j] == 0)
                         return
@@ -92,39 +95,35 @@ class Game(
 
         when (direction) {
             Swipe.LEFT -> {
-                grid.transpose()
-                grid.flip()
+                _grid.transpose()
+                _grid.flip()
                 transposed = true
                 flipped = true
             }
             Swipe.RIGHT -> {
-                grid.transpose()
+                _grid.transpose()
                 transposed = true
             }
             Swipe.UP -> {
-                grid.flip()
+                _grid.flip()
                 flipped = true
             }
             else -> Unit
         }
 
-        val past = grid.copyOf()
+        val past = _grid.copyOf()
 
-        for (i in 0 until grid.size) {
-            grid[i] = operate(grid[i].asList()).toIntArray()
+        for (i in 0 until _grid.size) {
+            _grid[i] = operate(grid[i].asList()).toIntArray()
         }
 
-        val changed = !grid.isEqualTo(past)
+        val changed = !_grid.isEqualTo(past)
 
-        if (flipped) grid.flip()
-        if (transposed) grid.transpose()
+        if (flipped) _grid.flip()
+        if (transposed) _grid.transpose()
+        if (changed) _grid.addTile()
 
-        if (changed) {
-            grid.addTile()
-            onMove()
-        }
-
-        gridState = grid.copyOf()
+        onMove()
 
         isGameWon()
         isGameOver()
