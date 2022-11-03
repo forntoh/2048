@@ -9,24 +9,17 @@ class Game(
     var onGameOver: () -> Unit = {},
     val onMove: () -> Unit = {}
 ) {
-    private val _grid = Grid(size)
+    private val _grid = Grid(size, state.ifEmpty { List(size) { IntArray(size) { 0 } } })
     val grid = _grid as List<IntArray>
 
     init {
-        if (state.isEmpty()) restart()
-        else {
-            _grid.clear()
-            _grid.addAll(state)
-        }
         onScoreChange(score)
     }
 
     fun restart() {
         score = 0
         _grid.clear()
-        for (i in 0 until size) {
-            _grid.add(IntArray(size) { 0 })
-        }
+        repeat(size) { _grid.add(IntArray(size) { 0 }) }
     }
 
     fun setValues(values: List<IntArray>) {
