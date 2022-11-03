@@ -55,30 +55,37 @@ class GameViewModel(
                     if (highScore.value < score) preferenceRepository.highScore = _highScore.updateAndGet { score }
                 },
                 onMove = {
-                    preferenceRepository.moves = _moves.updateAndGet { it + 1 }
-                    preferenceRepository.paused = false
-                    preferenceRepository.boardState = _game.value.grid
+                    with(preferenceRepository) {
+                        moves = _moves.updateAndGet { it + 1 }
+                        paused = false
+                        boardState = _game.value.grid
+                    }
                 },
             )
         }
     }
 
     fun newGame() {
-        preferenceRepository.moves = _moves.updateAndGet { 0 }
-        preferenceRepository.score = _score.updateAndGet { 0 }
-        preferenceRepository.timeElapsed = _playTimeInSecs.updateAndGet { 0 }
-        preferenceRepository.boardState = emptyList()
-        preferenceRepository.previousBoardState = emptyList()
+        with(preferenceRepository) {
+            moves = _moves.updateAndGet { 0 }
+            score = _score.updateAndGet { 0 }
+            timeElapsed = _playTimeInSecs.updateAndGet { 0 }
+            boardState = emptyList()
+            previousBoardState = emptyList()
+        }
         _game.value.restart()
     }
 
-    fun undoMove() {
-        if (preferenceRepository.previousBoardState.isNotEmpty()) {
-            _game.value.setValues(preferenceRepository.previousBoardState)
-            preferenceRepository.boardState = preferenceRepository.previousBoardState
+    fun undoMove() = with(preferenceRepository) {
+        if (previousBoardState.isNotEmpty()) {
+            _game.value.setValues(previousBoardState)
+            _game.value.score = previousScore
+            boardState = previousBoardState
+            score = _score.updateAndGet { previousScore }
         }
     }
 }
+
 
 class GameVieModelFactory(private val context: Context) :
     ViewModelProvider.NewInstanceFactory() {

@@ -2,7 +2,7 @@ package com.forntoh.twofoureight.model
 
 class Game(
     val size: Int,
-    private var score: Int = 0,
+    var score: Int = 0,
     val state: List<IntArray> = emptyList(),
     val onScoreChange: (Int) -> Unit = {},
     var onGameWon: () -> Unit = {},
