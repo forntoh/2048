@@ -2,7 +2,15 @@ package com.forntoh.twofoureight.model
 
 import kotlin.random.Random
 
-class Grid(size: Int) : MutableList<IntArray> by MutableList(size, { IntArray(size) { 0 } }) {
+class Grid(
+    size: Int,
+    init: List<IntArray>
+) : MutableList<IntArray> by MutableList(size, { init[it] }) {
+
+    init {
+        if (this.all { m -> m.all { n -> n == 0 } })
+            repeat(size / 2) { addTile() }
+    }
 
     fun addTile() {
         val options = mutableListOf<Pair<Int, Int>>()
@@ -39,8 +47,7 @@ class Grid(size: Int) : MutableList<IntArray> by MutableList(size, { IntArray(si
 
     fun isEqualTo(second: List<IntArray>): Boolean {
         if (this.size != second.size) return false
-        if (this.contentEquals(second)) return true
-        return true
+        return this.contentEquals(second)
     }
 
     private fun contentEquals(second: List<IntArray>): Boolean {
