@@ -28,28 +28,29 @@ class Game(
         _grid.addAll(values)
     }
 
-    private fun slide(row: List<Int>): Array<Int> {
+    private fun slide(row: IntArray): IntArray {
         val arr = row.filter { it > 0 }.toMutableList()
         val missing = List(grid.size - arr.size) { 0 }
         arr.addAll(0, missing)
-        return arr.toTypedArray()
+        return arr.toIntArray()
     }
 
-    private fun combine(row: List<Int>): Array<Int> {
-        val arr = row.toMutableList()
+    private fun combine(row: IntArray): IntArray {
+        var arr = row
         for (i in grid.size - 1 downTo 1) {
-            val a = row[i]
-            val b = row[i - 1]
-            if (a == b) {
+            val a = arr[i]
+            val b = arr[i - 1]
+            if (a == b && a != 0) {
                 arr[i] = a + b
                 arr[i - 1] = 0
+                arr = slide(arr)
                 if (score + arr[i] != score) {
                     score += arr[i]
                     onScoreChange(score)
                 }
             }
         }
-        return arr.toTypedArray()
+        return arr
     }
 
     private fun isGameWon() {
@@ -76,11 +77,9 @@ class Game(
         onGameOver()
     }
 
-    private fun operate(row: List<Int>): Array<Int> {
-        var arr = slide(row)
-        arr = combine(arr.toList())
-        arr = slide(arr.toList())
-        return arr
+    private fun operate(row: IntArray): IntArray = with(row) {
+        slide(this)
+        combine(this)
     }
 
     fun swipe(direction: Swipe) {
@@ -108,7 +107,7 @@ class Game(
         val past = _grid.copyOf()
 
         for (i in 0 until _grid.size) {
-            _grid[i] = operate(grid[i].asList()).toIntArray()
+            _grid[i] = operate(grid[i])
         }
 
         val changed = !_grid.isEqualTo(past)
