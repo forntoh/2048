@@ -77,10 +77,7 @@ class Game(
         onGameOver()
     }
 
-    private fun operate(row: IntArray): IntArray = with(row) {
-        slide(this)
-        combine(this)
-    }
+    private fun operate(row: IntArray): IntArray = combine(slide(row))
 
     fun swipe(direction: Swipe) {
         var flipped = false
