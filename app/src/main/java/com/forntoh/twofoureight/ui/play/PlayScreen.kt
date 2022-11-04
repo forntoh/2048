@@ -25,6 +25,7 @@ fun PlayScreen(
     bestScore: Int,
     moves: Int,
     game: Game,
+    grid: List<IntArray>,
     timeElapsed: Long,
     modifier: Modifier = Modifier,
     onNewRequest: () -> Unit = {},
@@ -48,7 +49,7 @@ fun PlayScreen(
         Text(text = stringResource(R.string.play_prompt))
 
         GameBoard(
-            game = game,
+            grid = grid,
             onSwipe = game::swipe
         )
 
@@ -64,13 +65,15 @@ fun PlayScreen(
 @Preview(showBackground = true)
 @Composable
 fun PlayScreenPreview() {
+    val game = Game(4)
     GameTheme {
         PlayScreen(
             score = 24,
             bestScore = 1024,
             moves = 10,
             timeElapsed = 36000L,
-            game = Game(4)
+            game = game,
+            grid = game.grid
         )
     }
 }

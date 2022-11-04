@@ -1,6 +1,5 @@
 package com.forntoh.twofoureight.ui.components
 
-import android.content.res.Configuration
 import androidx.compose.foundation.border
 import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.gestures.detectVerticalDragGestures
@@ -11,15 +10,13 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import com.forntoh.twofoureight.model.Game
-import com.forntoh.twofoureight.ui.theme.GameTheme
 import com.forntoh.twofoureight.ui.theme.Padding
 
 @Composable
 fun GameBoard(
-    game: Game,
+    grid: List<IntArray>,
     onSwipe: (Game.Swipe) -> Unit = {}
 ) {
     BoxWithConstraints(
@@ -57,30 +54,28 @@ fun GameBoard(
             }
     ) {
 
-        val tileSize = maxWidth / game.grid.size
+        val tileSize = maxWidth / grid.size
 
-        val mGrid = game.grid
-
-        for (i in game.grid.indices) {
-            for (j in game.grid.indices) {
-                GameTile(number = mGrid[i][j], size = tileSize, i, j)
+        for (i in grid.indices) {
+            for (j in grid.indices) {
+                GameTile(number = grid[i][j], size = tileSize, i, j)
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun BoardPreview() {
-    GameTheme {
-        GameBoard(game = Game(4))
-    }
-}
-
-@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun BoardPreviewDark() {
-    GameTheme {
-        GameBoard(game = Game(4))
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun BoardPreview() {
+//    GameTheme {
+//        GameBoard(game = Game(4))
+//    }
+//}
+//
+//@Preview(showBackground = true, uiMode = Configuration.UI_MODE_NIGHT_YES)
+//@Composable
+//fun BoardPreviewDark() {
+//    GameTheme {
+//        GameBoard(game = Game(4))
+//    }
+//}
