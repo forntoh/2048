@@ -18,7 +18,6 @@ fun GameApp(
 ) {
     val isDarkTheme by gameViewModel.isDarkTheme.collectAsState()
     val game = gameViewModel.game
-    val grid by gameViewModel.grid
 
     ProvideWindowInsets {
         GameTheme(darkTheme = isDarkTheme) {
@@ -28,6 +27,7 @@ fun GameApp(
                 val highScore by gameViewModel.highScore.collectAsState()
                 val moves by gameViewModel.moves.collectAsState()
                 val timeElapsed by gameViewModel.playTimeInSecs.collectAsState()
+                val grid by gameViewModel.grid
 
                 PlayScreen(
                     score = score,

@@ -46,7 +46,6 @@ dependencies {
 
     implementation 'androidx.core:core-ktx:1.9.0'
     implementation 'androidx.appcompat:appcompat:1.5.1'
-    implementation 'com.google.android.material:material:1.7.0'
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
     implementation "androidx.compose.ui:ui-tooling:$compose_version"
@@ -56,6 +55,7 @@ dependencies {
     implementation 'androidx.activity:activity-compose:1.7.0-alpha02'
 
     implementation 'com.google.code.gson:gson:2.8.9'
+    implementation group: 'com.google.android.material', name: 'material', version: '1.8.0-alpha02'
 
     implementation 'com.google.accompanist:accompanist-insets:0.17.0'
     testImplementation 'junit:junit:4.13.2'
